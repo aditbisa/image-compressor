@@ -1,0 +1,17 @@
+.inputFile {
+  display: none;
+}
+
+.inputLabel {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.inputLabel:hover {
+  background-color: #efefef;
+}
+.inputLabel:active {
+  background-color: #ececec;
+}
