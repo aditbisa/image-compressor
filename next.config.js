@@ -8,7 +8,7 @@ const nextConfig = {
     config,
     { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
   ) => {
-    config.resolve.alias["@styles"] = path.resolve(__dirname, "styles");
+    config.resolve.alias["@styles"] = path.resolve(__dirname, "src", "styles");
     return config;
   },
 };
