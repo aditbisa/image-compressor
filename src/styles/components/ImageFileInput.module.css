@@ -1,13 +1,34 @@
+.box {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.inputBox {
+  display: flex;
+}
+
+.infoBox {
+  flex-grow: 1;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.infoBox > * {
+  width: 100%;
+}
+
 .inputFile {
   display: none;
 }
 
 .inputLabel {
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  display: inline-block;
-  padding: 6px 12px;
   cursor: pointer;
+  border-right: 1px solid #ccc;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 .inputLabel:hover {
   background-color: #efefef;

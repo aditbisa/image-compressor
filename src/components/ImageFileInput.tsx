@@ -1,4 +1,5 @@
-import React from "react";
+import React, { ReactNode, useState } from "react";
+import { FileInfo } from "@components/FileInfo";
 import styles from "@styles/components/ImageFileInput.module.css";
 
 export interface ImageFileInputProp {
@@ -9,6 +10,8 @@ export interface ImageFileInputProp {
  * File selector only for images.
  */
 export function ImageFileInput(prop: ImageFileInputProp) {
+  const [file, setFile] = useState(null);
+
   /**
    * Handle input file change.
    */
@@ -16,22 +19,35 @@ export function ImageFileInput(prop: ImageFileInputProp) {
     const target = e.target as HTMLInputElement;
     if (!target.files[0]) return;
 
-    const file = target.files[0];
-    prop.onFileChange(file);
+    const selectedFile = target.files[0];
+    setFile(selectedFile);
+    prop.onFileChange(selectedFile);
   };
+
+  let info: ReactNode;
+  if (file) {
+    info = <FileInfo file={file} />;
+  } else {
+    info = <em>No image selected</em>;
+  }
 
   return (
     <>
-      <label htmlFor="imageFileInput" className={styles.inputLabel}>
-        🎨 Image File
-      </label>
-      <input
-        type="file"
-        id="imageFileInput"
-        className={styles.inputFile}
-        onChange={handleSelectFile}
-        accept="image/*"
-      />
+      <div className={styles.box}>
+        <div className={styles.inputBox}>
+          <label htmlFor="imageFileInput" className={styles.inputLabel}>
+            📁
+          </label>
+          <input
+            type="file"
+            id="imageFileInput"
+            className={styles.inputFile}
+            onChange={handleSelectFile}
+            accept="image/*"
+          />
+        </div>
+        <div className={styles.infoBox}>{info}</div>
+      </div>
     </>
   );
 }

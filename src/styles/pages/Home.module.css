@@ -46,9 +46,10 @@
   font-size: 2rem;
 }
 
-.title,
-.fileInput {
-  text-align: center;
+.fileBox > * {
+  margin-bottom: 1rem;
+  min-width: 500px;
+  min-height: 125px;
 }
 
 @media (prefers-color-scheme: dark) {
