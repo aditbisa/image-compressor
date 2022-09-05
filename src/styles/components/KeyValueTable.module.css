@@ -1,0 +1,21 @@
+.table {
+  text-align: start;
+  border-spacing: 0;
+}
+
+.row > * {
+  padding: 3px 8px;
+}
+.row:not(:nth-child(2n)) {
+  background-color: #f9f9ff;
+}
+
+.colKey {
+  min-width: 80px;
+  width: 1%;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.colValue {
+}
