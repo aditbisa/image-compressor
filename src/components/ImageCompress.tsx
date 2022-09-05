@@ -21,6 +21,9 @@ export function ImageCompress(prop: ImageCompressProp) {
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  /**
+   * The work is an effect only if the file changed.
+   */
   useEffect(() => {
     if (!(prop.file instanceof File)) return;
     setProcessing(true);
@@ -38,6 +41,7 @@ export function ImageCompress(prop: ImageCompressProp) {
       },
     };
 
+    // The work!
     imageCompression(prop.file, options)
       .then((compressedFile) => {
         setResult(compressedFile);
@@ -49,8 +53,17 @@ export function ImageCompress(prop: ImageCompressProp) {
       .finally(() => {
         setProcessing(false);
       });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prop.file?.name]);
+  }, [prop.file?.name, prop.file?.size]);
+
+  /**
+   * Handle download result.
+   * Either use anchor (need styling) or saveAs library.
+   */
+  const downloadResult = () => {
+    // TODO: download result.
+  };
 
   let resultInfo: ReactNode;
   if (processing) {
@@ -70,10 +83,6 @@ export function ImageCompress(prop: ImageCompressProp) {
       );
     }
   }
-
-  const downloadResult = () => {
-    // TODO: download result.
-  };
 
   return (
     <>
