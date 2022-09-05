@@ -8,50 +8,46 @@ import type { NextApiRequest, NextApiResponse } from "next";
 // TODO: this api give warning "API resolved without sending a response for /api/images, this may result in stalled requests."
 
 /**
- * Form multipart handler.
- */
-const upload = multer({
-  storage: multer.memoryStorage(),
-});
-
-/**
  * Api router.
  */
 const apiRoute = createRouter<NextApiRequest, NextApiResponse>();
 
 /**
- * Add middleware to API route with form multipart handler.
+ * Form multipart handler.
  */
-apiRoute.use(
-  upload.fields([
-    { name: "file", maxCount: 1 },
-    { name: "result", maxCount: 1 },
-  ])
-);
+const handleFileUpload = multer({
+  storage: multer.memoryStorage(),
+}).fields([
+  { name: "file", maxCount: 1 },
+  { name: "result", maxCount: 1 },
+]);
 
 /**
- * Do the actual work.
+ * POST /api/images
+ * Process files upload.
  */
 apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
-  const file = req["files"]["file"][0];
-  const result = req["files"]["result"][0];
+  return handleFileUpload(req, res, (err) => {
+    const file = req["files"]["file"][0];
+    const result = req["files"]["result"][0];
 
-  res.status(200).json({
-    status: "success",
-    file: {
-      fieldname: file.fieldname,
-      originalname: file.originalname,
-      encoding: file.encoding,
-      mimetype: file.mimetype,
-      size: file.size,
-    },
-    result: {
-      fieldname: result.fieldname,
-      originalname: result.originalname,
-      encoding: result.encoding,
-      mimetype: result.mimetype,
-      size: result.size,
-    },
+    res.status(200).json({
+      status: "success",
+      file: {
+        fieldname: file.fieldname,
+        originalname: file.originalname,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        size: file.size,
+      },
+      result: {
+        fieldname: result.fieldname,
+        originalname: result.originalname,
+        encoding: result.encoding,
+        mimetype: result.mimetype,
+        size: result.size,
+      },
+    });
   });
 });
 
@@ -68,6 +64,9 @@ export default apiRoute.handler({
   },
 });
 
+/**
+ * API config.
+ */
 export const config = {
   api: {
     bodyParser: false, // Prevent NextJs parsing, let body as stream.
