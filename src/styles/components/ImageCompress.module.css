@@ -1,0 +1,49 @@
+.box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  align-items: stretch;
+}
+
+.downloadBox {
+  display: flex;
+}
+
+.button {
+  border-right: 1px solid #ccc;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  opacity: 0.5;
+}
+.button.ready:hover {
+  background-color: #efefef;
+}
+.button.ready:active {
+  background-color: #ececec;
+}
+.button.ready {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.progressBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  padding: 0.5rem;
+}
+
+.caption {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.caption ~ * {
+  margin-left: 0.5rem;
+}
+
+.progress {
+  width: 100%;
+}
