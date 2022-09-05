@@ -1,5 +1,5 @@
 import imageCompression from "browser-image-compression";
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState, useEffect, useRef, ReactNode } from "react";
 import { FileInfo } from "@components/FileInfo";
 import { KeyValueTable } from "@components/KeyValueTable";
 import styles from "@styles/components/ImageCompress.module.css";
@@ -20,14 +20,29 @@ export function ImageCompress(prop: ImageCompressProp) {
   const [result, setResult] = useState<File>();
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const anchorElm = useRef<HTMLAnchorElement>(null);
 
   /**
-   * The work is an effect only if the file changed.
+   * Prepare the download link.
+   */
+  const prepareLink = (result?: File) => {
+    if (result) {
+      anchorElm.current.href = URL.createObjectURL(result);
+      anchorElm.current.download = "[compressed] " + result.name;
+    } else {
+      anchorElm.current.href = undefined;
+      anchorElm.current.download = undefined;
+    }
+  };
+
+  /**
+   * The work is an effect, only if the file changed.
    */
   useEffect(() => {
     if (!(prop.file instanceof File)) return;
     setProcessing(true);
     setResult(null);
+    prepareLink();
 
     const options = {
       ...prop.options,
@@ -45,6 +60,7 @@ export function ImageCompress(prop: ImageCompressProp) {
     imageCompression(prop.file, options)
       .then((compressedFile) => {
         setResult(compressedFile);
+        prepareLink(compressedFile);
         prop.onCompressionResult(compressedFile);
       })
       .catch((error) => {
@@ -56,14 +72,6 @@ export function ImageCompress(prop: ImageCompressProp) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prop.file?.name, prop.file?.size]);
-
-  /**
-   * Handle download result.
-   * Either use anchor (need styling) or saveAs library.
-   */
-  const downloadResult = () => {
-    // TODO: download result.
-  };
 
   let resultInfo: ReactNode;
   if (processing) {
@@ -88,12 +96,12 @@ export function ImageCompress(prop: ImageCompressProp) {
     <>
       <div className={styles.box}>
         <div className={styles.downloadBox}>
-          <label
+          <a
             className={styles.button + (result ? " " + styles.ready : "")}
-            onClick={downloadResult}
+            ref={anchorElm}
           >
             💾
-          </label>
+          </a>
         </div>
         <div className={styles.progressBox}>
           <div>
