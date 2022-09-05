@@ -1,0 +1,20 @@
+.box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0.5rem;
+}
+.box > * {
+  min-height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.box > * > * {
+  flex: 1;
+}
+
+.upload {
+  cursor: pointer;
+  line-height: 2rem;
+}
