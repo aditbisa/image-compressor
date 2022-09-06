@@ -55,6 +55,7 @@ export function ImageUpload(prop: ImageUploadProp) {
 
         try {
           data = await resp.json();
+          console.log(data);
           if (data["status"] != "success") {
             error = data;
           }
