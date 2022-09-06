@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import styles from "@styles/components/ImageUpload.module.css";
+import React, { useState, useEffect } from 'react';
+import styles from '@styles/components/ImageUpload.module.css';
 
 enum ImageUploadState {
   NoFile,
@@ -41,12 +41,12 @@ export function ImageUpload(prop: ImageUploadProp) {
 
     // Upload files as multipart/form-data
     const formData = new FormData();
-    formData.append("file", prop.file);
-    formData.append("result", prop.result);
+    formData.append('file', prop.file);
+    formData.append('result', prop.result);
 
     // TODO: move this work to a service. or not?
-    fetch("/api/images/upload", {
-      method: "POST",
+    fetch('/api/images/upload', {
+      method: 'POST',
       body: formData,
     })
       .then(async (resp) => {
@@ -56,7 +56,7 @@ export function ImageUpload(prop: ImageUploadProp) {
         try {
           data = await resp.json();
           console.log(data);
-          if (data["status"] != "success") {
+          if (data['status'] != 'success') {
             error = data;
           }
         } catch (err) {
@@ -68,12 +68,12 @@ export function ImageUpload(prop: ImageUploadProp) {
           setState(ImageUploadState.Done);
         } else {
           setState(ImageUploadState.Error);
-          console.error("Upload error:", error);
+          console.error('Upload error:', error);
         }
       })
       .catch((error) => {
         setState(ImageUploadState.Error);
-        console.error("Upload error:", error);
+        console.error('Upload error:', error);
       });
   };
 
@@ -88,7 +88,11 @@ export function ImageUpload(prop: ImageUploadProp) {
             </button>
           )}
           {state == ImageUploadState.Uploading && <em>Uploading..</em>}
-          {state == ImageUploadState.Done && <em>Images uploaded.</em>}
+          {state == ImageUploadState.Done && (
+            <span>
+              <strong>Images uploaded</strong> 🎉
+            </span>
+          )}
           {state == ImageUploadState.Error && (
             <span>
               <em>Upload failed</em> 😢
