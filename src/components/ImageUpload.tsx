@@ -41,8 +41,8 @@ export function ImageUpload(prop: ImageUploadProp) {
 
     // Upload files as multipart/form-data
     const formData = new FormData();
-    formData.append('file', prop.file);
-    formData.append('result', prop.result);
+    formData.append('original', prop.file);
+    formData.append('resized', prop.result);
 
     // TODO: move this work to a service. or not?
     fetch('/api/images/upload', {

@@ -54,12 +54,13 @@ export async function cleanup() {
 /**
  * Return interface for `listFiles()`.
  */
+export interface FileInfo {
+  filename: string;
+  lastModified: Date;
+  fileSize: number;
+}
 export interface ListFilesOuput {
-  data: {
-    filename: string;
-    lastModified: Date;
-    fileSize: number;
-  }[];
+  data: FileInfo[];
   currentPageToken: string;
   nextPageToken: string;
   itemCount: number;

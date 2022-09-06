@@ -7,7 +7,13 @@
  */
 import { createRouter } from 'next-connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { init, cleanup, ListFilesOuput, listFiles } from '@services/s3';
+import {
+  init,
+  cleanup,
+  ListFilesOuput,
+  FileInfo,
+  listFiles,
+} from '@services/s3';
 
 /**
  * Api router.
@@ -17,10 +23,16 @@ const apiRoute = createRouter<NextApiRequest, NextApiResponse>();
 /**
  * Response json interface.
  */
+interface ListDataResponse extends Omit<ListFilesOuput, 'data'> {
+  data: FileInfo & {
+    original: boolean;
+    resized: boolean;
+  };
+}
 interface ListResponse {
   status: string;
   error?: any;
-  data?: ListFilesOuput;
+  data?: ListDataResponse;
 }
 
 /**
@@ -28,7 +40,7 @@ interface ListResponse {
  */
 apiRoute.get(async (req: NextApiRequest, res: NextApiResponse) => {
   const pageToken = (req.query['page'] as string) || '';
-  let files: ListFilesOuput;
+  let files: any;
 
   await init();
   try {
@@ -36,6 +48,16 @@ apiRoute.get(async (req: NextApiRequest, res: NextApiResponse) => {
   } finally {
     await cleanup();
   }
+
+  const originalNamePattern = /^\d+\-A_/;
+  const resizedNamePattern = /^\d+\-B_/;
+  files.data = files.data.map((file) => {
+    return {
+      ...file,
+      original: originalNamePattern.test(file.filename),
+      resized: resizedNamePattern.test(file.filename),
+    };
+  });
 
   const result: ListResponse = {
     status: 'success',

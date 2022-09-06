@@ -20,8 +20,8 @@ const apiRoute = createRouter<NextApiRequest, NextApiResponse>();
 const handleFileUpload = multer({
   storage: multer.memoryStorage(),
 }).fields([
-  { name: 'file', maxCount: 1 },
-  { name: 'result', maxCount: 1 },
+  { name: 'original', maxCount: 1 },
+  { name: 'resized', maxCount: 1 },
 ]);
 
 /**
@@ -31,23 +31,23 @@ apiRoute.post(async (req: NextApiRequest, res: NextApiResponse) => {
   return handleFileUpload(req, res, async (err) => {
     const uploadedFiles: any = req['files'];
 
-    let file, result;
+    let originalFile, resizedFile;
     if (
-      'file' in uploadedFiles &&
-      Array.isArray(uploadedFiles['file']) &&
-      uploadedFiles['file'].length
+      'original' in uploadedFiles &&
+      Array.isArray(uploadedFiles['original']) &&
+      uploadedFiles['original'].length
     ) {
-      file = uploadedFiles['file'][0];
+      originalFile = uploadedFiles['original'][0];
     }
     if (
-      'result' in uploadedFiles &&
-      Array.isArray(uploadedFiles['result']) &&
-      uploadedFiles['result'].length
+      'resized' in uploadedFiles &&
+      Array.isArray(uploadedFiles['resized']) &&
+      uploadedFiles['resized'].length
     ) {
-      result = uploadedFiles['result'][0];
+      resizedFile = uploadedFiles['resized'][0];
     }
 
-    if (!file || !result) {
+    if (!originalFile || !resizedFile) {
       res.status(400).json({
         status: 'failed',
         error: 'No files uploaded.',
@@ -55,32 +55,32 @@ apiRoute.post(async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const id = new Date().valueOf();
-    const originalName = `${id}-A_${file.originalname}`;
-    const resultName = `${id}-B_${file.originalname}`;
+    const originalFilename = originalFile.originalname;
+    const originalS3Name = `${id}-A_${originalFilename}`;
+    const resizedS3Name = `${id}-B_${originalFilename}`;
 
     await init();
     try {
-      await uploadFile(originalName, file.buffer);
-      await uploadFile(resultName, result.buffer);
+      await uploadFile(originalS3Name, originalFile.buffer);
+      await uploadFile(resizedS3Name, resizedFile.buffer);
     } finally {
       await cleanup();
     }
 
     res.status(200).json({
       status: 'success',
-      file: {
-        fieldname: file.fieldname,
-        originalname: file.originalname,
-        encoding: file.encoding,
-        mimetype: file.mimetype,
-        size: file.size,
-      },
-      result: {
-        fieldname: result.fieldname,
-        originalname: result.originalname,
-        encoding: result.encoding,
-        mimetype: result.mimetype,
-        size: result.size,
+      data: {
+        filename: originalFilename,
+        original: {
+          s3Name: originalS3Name,
+          mimeType: originalFile.mimetype,
+          size: originalFile.size,
+        },
+        resized: {
+          s3Name: resizedS3Name,
+          mimeType: resizedFile.mimetype,
+          size: resizedFile.size,
+        },
       },
     });
   });
