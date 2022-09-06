@@ -1,9 +1,9 @@
-import Head from "next/head";
-import React, { useState } from "react";
-import { ImageFileInput } from "@components/ImageFileInput";
-import { ImageCompress } from "@components/ImageCompress";
-import { ImageUpload } from "@components/ImageUpload";
-import styles from "@styles/pages/Home.module.css";
+import Head from 'next/head';
+import React, { useState } from 'react';
+import { ImageFileInput } from '@components/ImageFileInput';
+import { ImageCompress } from '@components/ImageCompress';
+import { ImageUpload } from '@components/ImageUpload';
+import styles from '@styles/pages/Home.module.css';
 
 export default function Home() {
   const [file, setFile] = useState<File>();

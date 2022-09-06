@@ -1,8 +1,8 @@
-import imageCompression from "browser-image-compression";
-import React, { useState, useEffect, useRef, ReactNode } from "react";
-import { FileInfo } from "@components/FileInfo";
-import { KeyValueTable } from "@components/KeyValueTable";
-import styles from "@styles/components/ImageCompress.module.css";
+import imageCompression from 'browser-image-compression';
+import React, { useState, useEffect, useRef, ReactNode } from 'react';
+import { FileInfo } from '@components/FileInfo';
+import { KeyValueTable } from '@components/KeyValueTable';
+import styles from '@styles/components/ImageCompress.module.css';
 
 export interface ImageCompressProp {
   file: File;
@@ -28,7 +28,7 @@ export function ImageCompress(prop: ImageCompressProp) {
   const prepareLink = (result?: File) => {
     if (result) {
       anchorElm.current.href = URL.createObjectURL(result);
-      anchorElm.current.download = "[compressed] " + result.name;
+      anchorElm.current.download = '[compressed] ' + result.name;
     } else {
       anchorElm.current.href = undefined;
       anchorElm.current.download = undefined;
@@ -97,7 +97,7 @@ export function ImageCompress(prop: ImageCompressProp) {
       <div className={styles.box}>
         <div className={styles.downloadBox}>
           <a
-            className={styles.button + (result ? " " + styles.ready : "")}
+            className={styles.button + (result ? ' ' + styles.ready : '')}
             ref={anchorElm}
           >
             💾

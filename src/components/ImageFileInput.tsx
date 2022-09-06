@@ -1,6 +1,6 @@
-import React, { ReactNode, useState } from "react";
-import { FileInfo } from "@components/FileInfo";
-import styles from "@styles/components/ImageFileInput.module.css";
+import React, { ReactNode, useState } from 'react';
+import { FileInfo } from '@components/FileInfo';
+import styles from '@styles/components/ImageFileInput.module.css';
 
 export interface ImageFileInputProp {
   onFileChange: (file: File) => void;

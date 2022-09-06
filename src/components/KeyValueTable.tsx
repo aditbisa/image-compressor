@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "@styles/components/KeyValueTable.module.css";
+import React from 'react';
+import styles from '@styles/components/KeyValueTable.module.css';
 
 export interface KeyValueTableProp {
   data: {
