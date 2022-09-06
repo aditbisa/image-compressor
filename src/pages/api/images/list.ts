@@ -7,7 +7,7 @@
  */
 import { createRouter } from 'next-connect';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ListFilesOuput, listFiles, init, cleanup } from '@services/s3';
+import { init, cleanup, ListFilesOuput, listFiles } from '@services/s3';
 
 /**
  * Api router.
@@ -28,10 +28,14 @@ interface ListResponse {
  */
 apiRoute.get(async (req: NextApiRequest, res: NextApiResponse) => {
   const pageToken = (req.query['page'] as string) || '';
+  let files: ListFilesOuput;
 
   await init();
-  const files: ListFilesOuput = await listFiles(pageToken);
-  await cleanup();
+  try {
+    files = await listFiles(pageToken);
+  } finally {
+    await cleanup();
+  }
 
   const result: ListResponse = {
     status: 'success',
@@ -46,7 +50,7 @@ apiRoute.get(async (req: NextApiRequest, res: NextApiResponse) => {
 export default apiRoute.handler({
   onError: (err: any, req, res) => {
     console.error('apiRoute.onError:', err.stack);
-    res.status(500).end({
+    res.status(500).json({
       status: 'error',
       error: 'Server error! Sorry 😢',
     });
