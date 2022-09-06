@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "0656f9fd-b9a9-48f7-8f8e-93830317f6d9",
+    "name": "Image Compressor",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9155431"
+  },
+  "item": [
+    {
+      "name": "Upload Images",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "original",
+              "type": "file",
+              "src": "/D:/Etc/Images/smiley-mask-hires.png"
+            },
+            {
+              "key": "resized",
+              "type": "file",
+              "src": "/D:/Etc/Images/smiley-mask.png"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{api_url}}/images/upload",
+          "host": ["{{api_url}}"],
+          "path": ["images", "upload"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Images",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Save Next Page Token from List Images\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.status).to.eql(\"success\");\r",
+              "    pm.collectionVariables.set(\"nextPageToken\", jsonData.data.nextPageToken);\r",
+              "    pm.collectionVariables.set(\"nextPageTokenEncoded\", encodeURIComponent(jsonData.data.nextPageToken));\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/images/list",
+          "host": ["{{api_url}}"],
+          "path": ["images", "list"],
+          "query": [
+            {
+              "key": "page",
+              "value": "{{nextPageTokenEncoded}}",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "View Image",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/images/view?filename=1662460940394-B_smiley-mask-hires.png",
+          "host": ["{{api_url}}"],
+          "path": ["images", "view"],
+          "query": [
+            {
+              "key": "filename",
+              "value": "1662460940394-B_smiley-mask-hires.png"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "api_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "nextPageToken",
+      "value": ""
+    },
+    {
+      "key": "nextPageTokenEncoded",
+      "value": ""
+    }
+  ]
+}
