@@ -7,6 +7,7 @@
 import { createRouter } from 'next-connect';
 import multer from 'multer';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { init, cleanup, uploadFile } from '@services/s3';
 
 /**
  * Api router.
@@ -26,8 +27,8 @@ const handleFileUpload = multer({
 /**
  * Process files upload.
  */
-apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
-  return handleFileUpload(req, res, (err) => {
+apiRoute.post(async (req: NextApiRequest, res: NextApiResponse) => {
+  return handleFileUpload(req, res, async (err) => {
     const uploadedFiles: any = req['files'];
 
     let file, result;
@@ -51,6 +52,18 @@ apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
         status: 'failed',
         error: 'No files uploaded.',
       });
+    }
+
+    const id = new Date().valueOf();
+    const originalName = `${id}-A_${file.originalname}`;
+    const resultName = `${id}-B_${file.originalname}`;
+
+    await init();
+    try {
+      await uploadFile(originalName, file.buffer);
+      await uploadFile(resultName, result.buffer);
+    } finally {
+      await cleanup();
     }
 
     res.status(200).json({
@@ -78,11 +91,17 @@ apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
  */
 export default apiRoute.handler({
   onError: (err: any, req, res) => {
-    console.error(err.stack);
-    res.status(500).end({ error: 'Server error! Sorry 😢' });
+    console.error('apiRoute.onError:', err.stack);
+    res.status(500).json({
+      status: 'error',
+      error: 'Server error! Sorry 😢',
+    });
   },
   onNoMatch: (req, res) => {
-    res.status(405).json({ error: 'Method Not Allowed' });
+    res.status(405).json({
+      status: 'error',
+      error: 'Method Not Allowed',
+    });
   },
 });
 
