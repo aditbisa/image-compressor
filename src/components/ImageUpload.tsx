@@ -44,8 +44,8 @@ export function ImageUpload(prop: ImageUploadProp) {
     formData.append("file", prop.file);
     formData.append("result", prop.result);
 
-    // TODO: move this work to a service
-    fetch("/api/images", {
+    // TODO: move this work to a service. or not?
+    fetch("/api/images/upload", {
       method: "POST",
       body: formData,
     })

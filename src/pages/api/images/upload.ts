@@ -1,11 +1,12 @@
-import fs from "node:fs";
-import { randomUUID } from "node:crypto";
+/**
+ * POST "/api/images/upload" endpoint.
+ *
+ * TODO: file size limit, image only filter, and security.
+ * TODO: remove warning "API resolved without sending a response for /api/images, this may result in stalled requests."
+ */
 import { createRouter } from "next-connect";
 import multer from "multer";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-// TODO: file size limit, image only filter, and security.
-// TODO: this api give warning "API resolved without sending a response for /api/images, this may result in stalled requests."
 
 /**
  * Api router.
@@ -23,7 +24,6 @@ const handleFileUpload = multer({
 ]);
 
 /**
- * POST /api/images
  * Process files upload.
  */
 apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
