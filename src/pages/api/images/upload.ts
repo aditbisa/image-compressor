@@ -4,9 +4,9 @@
  * TODO: file size limit, image only filter, and security.
  * TODO: remove warning "API resolved without sending a response for /api/images, this may result in stalled requests."
  */
-import { createRouter } from "next-connect";
-import multer from "multer";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { createRouter } from 'next-connect';
+import multer from 'multer';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 /**
  * Api router.
@@ -19,8 +19,8 @@ const apiRoute = createRouter<NextApiRequest, NextApiResponse>();
 const handleFileUpload = multer({
   storage: multer.memoryStorage(),
 }).fields([
-  { name: "file", maxCount: 1 },
-  { name: "result", maxCount: 1 },
+  { name: 'file', maxCount: 1 },
+  { name: 'result', maxCount: 1 },
 ]);
 
 /**
@@ -28,11 +28,33 @@ const handleFileUpload = multer({
  */
 apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
   return handleFileUpload(req, res, (err) => {
-    const file = req["files"]["file"][0];
-    const result = req["files"]["result"][0];
+    const uploadedFiles: any = req['files'];
+
+    let file, result;
+    if (
+      'file' in uploadedFiles &&
+      Array.isArray(uploadedFiles['file']) &&
+      uploadedFiles['file'].length
+    ) {
+      file = uploadedFiles['file'][0];
+    }
+    if (
+      'result' in uploadedFiles &&
+      Array.isArray(uploadedFiles['result']) &&
+      uploadedFiles['result'].length
+    ) {
+      result = uploadedFiles['result'][0];
+    }
+
+    if (!file || !result) {
+      res.status(400).json({
+        status: 'failed',
+        error: 'No files uploaded.',
+      });
+    }
 
     res.status(200).json({
-      status: "success",
+      status: 'success',
       file: {
         fieldname: file.fieldname,
         originalname: file.originalname,
@@ -57,10 +79,10 @@ apiRoute.post((req: NextApiRequest, res: NextApiResponse) => {
 export default apiRoute.handler({
   onError: (err: any, req, res) => {
     console.error(err.stack);
-    res.status(500).end({ error: "Server error! Sorry 😢" });
+    res.status(500).end({ error: 'Server error! Sorry 😢' });
   },
   onNoMatch: (req, res) => {
-    res.status(405).json({ error: "Method Not Allowed" });
+    res.status(405).json({ error: 'Method Not Allowed' });
   },
 });
 
